@@ -1,0 +1,121 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.Window window {
+  default-width: 800;
+  default-height: 600;
+  title: _("LSW Installer");
+
+  content: Adw.ToolbarView {
+    top-bar-style: raised;
+    bottom-bar-style: raised;
+
+    [top]
+    Adw.HeaderBar {}
+
+    [bottom]
+    Gtk.ActionBar {
+      revealed: true;
+      valign: end;
+
+      [start]
+      Gtk.Button {
+        label: _("Back");
+      }
+
+      [end]
+      Gtk.Button {
+        label: _("Next");
+        styles [ "suggested-action" ]
+      }
+    }
+
+    content: Gtk.Box {
+      orientation: vertical;
+
+      Adw.Carousel carousel {
+        hexpand: true;
+        vexpand: true;
+        allow-long-swipes: false;
+        allow-scroll-wheel: false;
+        spacing: 12;
+
+        // === PAGE 1 ===
+        Gtk.Box {
+          orientation: vertical;
+          hexpand: true;
+          vexpand: true;
+
+          Adw.StatusPage {
+            title: _("Windows ISO Selection");
+            icon-name: "media-optical-cd-symbolic";
+            description: _("Select the ISO of Windows to install in the Virtual Machine.");
+            vexpand: false;
+            margin-bottom: 0;
+          }
+
+          Adw.PreferencesPage {
+            margin-top: 0;
+            vexpand: true;
+
+            Adw.PreferencesGroup {
+              Adw.ActionRow {
+                title: _("ISO file");
+                subtitle: _("Choose a Windows ISO file");
+
+                [suffix]
+                Gtk.Label iso_path_label {
+                  xalign: 0;
+                  ellipsize: end;
+                  hexpand: true;
+                  label: _("<No file selected>");
+                }
+
+                [suffix]
+                Gtk.Button {
+                  label: _("Browse…");
+                  valign: center;
+                }
+              }
+            }
+          }
+        }
+
+        // === PAGE 2 ===
+        Gtk.Box {
+          orientation: vertical;
+          hexpand: true;
+          vexpand: true;
+          spacing: 6;
+
+          Adw.StatusPage {
+            title: _("Page Two");
+            description: _("Second step of the installer");
+            vexpand: true;
+          }
+        }
+
+        // === PAGE 3 ===
+        Gtk.Box {
+          orientation: vertical;
+          hexpand: true;
+          vexpand: true;
+          spacing: 6;
+
+          Adw.StatusPage {
+            title: _("Page Three");
+            description: _("Final step");
+            vexpand: true;
+          }
+        }
+      }
+
+      // indicator BELOW the pages
+      Gtk.Box {
+        halign: center;
+        Adw.CarouselIndicatorDots { carousel: carousel; }
+        //Adw.CarouselIndicatorLines { carousel: carousel; }
+      }
+    };
+  };
+}
