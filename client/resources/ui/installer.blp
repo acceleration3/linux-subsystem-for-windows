@@ -19,14 +19,17 @@ Adw.Window window {
       valign: end;
 
       [start]
-      Gtk.Button {
+      Gtk.Button back_button {
         label: _("Back");
       }
 
       [end]
-      Gtk.Button {
+      Gtk.Button next_button {
         label: _("Next");
-        styles [ "suggested-action" ]
+
+        styles [
+          "suggested-action",
+        ]
       }
     }
 
@@ -37,28 +40,107 @@ Adw.Window window {
         hexpand: true;
         vexpand: true;
         allow-long-swipes: false;
+        allow-mouse-drag: false;
         allow-scroll-wheel: false;
         spacing: 12;
-
         // === PAGE 1 ===
-        Gtk.Box {
-          orientation: vertical;
+        Gtk.ScrolledWindow {
           hexpand: true;
           vexpand: true;
 
-          Adw.StatusPage {
-            title: _("Windows ISO Selection");
-            icon-name: "media-optical-cd-symbolic";
-            description: _("Select the ISO of Windows to install in the Virtual Machine.");
-            vexpand: false;
-            margin-bottom: 0;
-          }
+          child: Gtk.Box {
+            orientation: vertical;
+            spacing: 18;
+            margin-start: 24;
+            margin-end: 24;
+            margin-top: 24;
+            margin-bottom: 24;
+            // header
+            Gtk.Box {
+              orientation: vertical;
+              spacing: 6;
+              halign: center;
 
-          Adw.PreferencesPage {
-            margin-top: 0;
-            vexpand: true;
+              Gtk.Image {
+                icon-name: "media-optical-cd-symbolic";
+                pixel-size: 96;
+                halign: center;
+              }
+
+              Gtk.Label {
+                label: _("Windows ISO Selection");
+                wrap: true;
+                halign: center;
+
+                styles [
+                  "title-2",
+                ]
+              }
+
+              Gtk.Label {
+                label: _("Select the ISO of Windows to install in the Virtual Machine");
+                wrap: true;
+                halign: center;
+
+                styles [
+                  "dim-label",
+                ]
+              }
+            }
 
             Adw.PreferencesGroup {
+              title: _("ISO Source");
+              description: _("Choose how to obtain the Windows ISO file");
+
+              Adw.ActionRow {
+                title: _("Download ISO");
+                subtitle: _("Download Windows ISO from Microsoft servers");
+
+                [prefix]
+                Gtk.CheckButton download_radio {
+                  active: true;
+                }
+              }
+
+              Adw.ActionRow {
+                title: _("Select existing ISO");
+                subtitle: _("Use an existing Windows ISO file on your system");
+
+                [prefix]
+                Gtk.CheckButton select_radio {
+                  group: download_radio;
+                }
+              }
+            }
+
+            Adw.PreferencesGroup {
+              title: _("Download Settings");
+              description: _("Configure where to download the ISO file");
+
+              Adw.ActionRow {
+                title: _("Download folder");
+                subtitle: _("Choose where to save the downloaded ISO");
+
+                [suffix]
+                Gtk.Label download_path_label {
+                  xalign: 0;
+                  ellipsize: end;
+                  hexpand: true;
+                  label: _("~/Downloads");
+                }
+
+                [suffix]
+                Gtk.Button download_browse_button {
+                  label: _("Browse…");
+                  valign: center;
+                }
+              }
+            }
+
+            Adw.PreferencesGroup {
+              title: _("ISO File");
+              description: _("Select an existing Windows ISO file");
+
               Adw.ActionRow {
                 title: _("ISO file");
                 subtitle: _("Choose a Windows ISO file");
@@ -68,53 +150,275 @@ Adw.Window window {
                   xalign: 0;
                   ellipsize: end;
                   hexpand: true;
-                  label: _("<No file selected>");
+                  label: _("No file selected");
                 }
 
                 [suffix]
-                Gtk.Button {
+                Gtk.Button iso_browse_button {
                   label: _("Browse…");
                   valign: center;
                 }
               }
             }
-          }
+          };
         }
 
         // === PAGE 2 ===
         Gtk.Box {
           orientation: vertical;
-          hexpand: true;
-          vexpand: true;
-          spacing: 6;
+          halign: center;
+          valign: center;
+          spacing: 24;
 
-          Adw.StatusPage {
-            title: _("Page Two");
-            description: _("Second step of the installer");
-            vexpand: true;
+          Gtk.Spinner loading_spinner {
+            spinning: true;
+            width-request: 64;
+            height-request: 64;
+          }
+
+          Gtk.Label loading_label {
+            label: _("Preparing installation...");
+            halign: center;
+
+            styles [
+              "title-2",
+            ]
           }
         }
 
         // === PAGE 3 ===
-        Gtk.Box {
-          orientation: vertical;
+        Gtk.Stack {
+          transition-type: crossfade;
+
+          Gtk.StackPage prefs_page {
+            child: Gtk.ScrolledWindow {
+              hexpand: true;
+              vexpand: true;
+
+              child: Gtk.Box {
+                orientation: vertical;
+                spacing: 18;
+                margin-start: 24;
+                margin-end: 24;
+                margin-top: 24;
+                margin-bottom: 24;
+                // header
+                Gtk.Box {
+                  orientation: vertical;
+                  spacing: 6;
+                  halign: center;
+
+                  Gtk.Image {
+                    icon-name: "computer-symbolic";
+                    pixel-size: 96;
+                    halign: center;
+                  }
+
+                  Gtk.Label {
+                    label: _("Virtual Machine Setup");
+                    wrap: true;
+                    halign: center;
+
+                    styles [
+                      "title-2",
+                    ]
+                  }
+
+                  Gtk.Label {
+                    label: _("Fill in the settings for the Virtual Machine");
+                    wrap: true;
+                    halign: center;
+
+                    styles [
+                      "dim-label",
+                    ]
+                  }
+                }
+
+                Adw.PreferencesGroup {
+                  title: _("Virtual Machine settings");
+                  description: _("Settings used for setting up the virtual machine with libvirt");
+
+                  Adw.EntryRow {
+                    title: _("Name");
+                    text: _("LSWVM");
+                    sensitive: false;
+                  }
+
+                  Adw.SpinRow memory_spinner {
+                    title: "Memory";
+                    subtitle: _("System memory to allocate for the VM in Gigabytes");
+
+                    adjustment: Gtk.Adjustment {
+                      lower: 1;
+                      upper: 512;
+                      step-increment: 1;
+                      page-increment: 5;
+                      value: 8;
+                    };
+                  }
+
+                  Adw.SpinRow storage_spinner {
+                    title: "Disk Storage";
+                    subtitle: _("Maximum size of the virtual disk file used as storage by the VM in Gigabytes");
+
+                    adjustment: Gtk.Adjustment {
+                      lower: 54;
+                      upper: 1024;
+                      step-increment: 1;
+                      page-increment: 5;
+                      value: 120;
+                    };
+                  }
+
+                  Adw.SpinRow cpu_spinner {
+                    title: "CPU Cores";
+                    subtitle: _("Number of CPU cores to share with the VM");
+
+                    adjustment: Gtk.Adjustment {
+                      lower: 1;
+                      upper: 128;
+                      step-increment: 1;
+                      page-increment: 1;
+                      value: 4;
+                    };
+                  }
+                }
+
+                Adw.PreferencesGroup {
+                  title: _("Windows settings");
+                  description: _("Settings used for setting up Windows");
+
+                  Adw.EntryRow admin_username_entry {
+                    title: _("Admin username");
+                    text: _("lsw");
+                  }
+
+                  Adw.PasswordEntryRow admin_password_entry {
+                    title: _("Admin password");
+                  }
+
+                  Adw.ActionRow {
+                    title: _("Hardware Acceleration");
+                    subtitle: _("Enable CPU virtualization and Hyper-V features for better performance");
+
+                    [prefix]
+                    Gtk.CheckButton hardware_accel_check {
+                      active: true;
+                    }
+                  }
+
+                  Adw.ComboRow windows_edition_combo {
+                    title: _("Windows Edition");
+                    subtitle: _("The edition of Windows to install to the VM");
+                    width-request: 300;
+
+                    model: Gtk.StringList {
+                      strings [
+                        "Home",
+                      ]
+                    };
+                  }
+                }
+              };
+            };
+          }
+        }
+
+        // === PAGE 4 ===
+        Gtk.ScrolledWindow {
           hexpand: true;
           vexpand: true;
-          spacing: 6;
 
-          Adw.StatusPage {
-            title: _("Page Three");
-            description: _("Final step");
-            vexpand: true;
-          }
+          child: Gtk.Box {
+            orientation: vertical;
+            spacing: 18;
+            margin-start: 24;
+            margin-end: 24;
+            margin-top: 24;
+            margin-bottom: 24;
+            // header
+            Gtk.Box {
+              orientation: vertical;
+              spacing: 6;
+              halign: center;
+
+              Gtk.Image {
+                icon-name: "folder-download-symbolic";
+                pixel-size: 96;
+                halign: center;
+              }
+
+              Gtk.Label {
+                label: _("Install the VM");
+                wrap: true;
+                halign: center;
+
+                styles [
+                  "title-2",
+                ]
+              }
+
+              Gtk.Label {
+                label: _("Start the VM installation");
+                wrap: true;
+                halign: center;
+
+                styles [
+                  "dim-label",
+                ]
+              }
+            }
+
+            Gtk.Button install_button {
+              label: _("Install VM");
+
+              styles [
+                "suggested-action",
+                "pill",
+              ]
+            }
+
+            Label {
+              label: _("Instalation log:");
+              halign: start;
+              margin-bottom: 0;
+
+              styles [
+                "heading",
+              ]
+            }
+
+            Frame {
+              margin-bottom: 12;
+              margin-top: 0;
+
+              ScrolledWindow {
+                height-request: 180;
+                width-request: 600;
+
+                TextView install_log {
+                  bottom-margin: 12;
+                  left-margin: 12;
+                  right-margin: 12;
+                  top-margin: 12;
+                  editable: false;
+                  cursor-visible: false;
+                  wrap-mode: char;
+                }
+              }
+            }
+          };
         }
       }
 
       // indicator BELOW the pages
       Gtk.Box {
         halign: center;
-        Adw.CarouselIndicatorDots { carousel: carousel; }
-        //Adw.CarouselIndicatorLines { carousel: carousel; }
+
+        Adw.CarouselIndicatorDots {
+          carousel: carousel;
+        }
       }
     };
   };

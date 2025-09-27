@@ -22,12 +22,12 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
             <property name="revealed">true</property>
             <property name="valign">2</property>
             <child type="start">
-              <object class="GtkButton">
+              <object class="GtkButton" id="back_button">
                 <property name="label" translatable="yes">Back</property>
               </object>
             </child>
             <child type="end">
-              <object class="GtkButton">
+              <object class="GtkButton" id="next_button">
                 <property name="label" translatable="yes">Next</property>
                 <style>
                   <class name="suggested-action"/>
@@ -44,28 +44,113 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
                 <property name="allow-long-swipes">false</property>
+                <property name="allow-mouse-drag">false</property>
                 <property name="allow-scroll-wheel">false</property>
                 <property name="spacing">12</property>
                 <child>
-                  <object class="GtkBox">
-                    <property name="orientation">1</property>
+                  <object class="GtkScrolledWindow">
                     <property name="hexpand">true</property>
                     <property name="vexpand">true</property>
-                    <child>
-                      <object class="AdwStatusPage">
-                        <property name="title" translatable="yes">Windows ISO Selection</property>
-                        <property name="icon-name">media-optical-cd-symbolic</property>
-                        <property name="description" translatable="yes">Select the ISO of Windows to install in the Virtual Machine.</property>
-                        <property name="vexpand">false</property>
-                        <property name="margin-bottom">0</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwPreferencesPage">
-                        <property name="margin-top">0</property>
-                        <property name="vexpand">true</property>
+                    <property name="child">
+                      <object class="GtkBox">
+                        <property name="orientation">1</property>
+                        <property name="spacing">18</property>
+                        <property name="margin-start">24</property>
+                        <property name="margin-end">24</property>
+                        <property name="margin-top">24</property>
+                        <property name="margin-bottom">24</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">1</property>
+                            <property name="spacing">6</property>
+                            <property name="halign">3</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">media-optical-cd-symbolic</property>
+                                <property name="pixel-size">96</property>
+                                <property name="halign">3</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Windows ISO Selection</property>
+                                <property name="wrap">true</property>
+                                <property name="halign">3</property>
+                                <style>
+                                  <class name="title-2"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Select the ISO of Windows to install in the Virtual Machine</property>
+                                <property name="wrap">true</property>
+                                <property name="halign">3</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
                         <child>
                           <object class="AdwPreferencesGroup">
+                            <property name="title" translatable="yes">ISO Source</property>
+                            <property name="description" translatable="yes">Choose how to obtain the Windows ISO file</property>
+                            <child>
+                              <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Download ISO</property>
+                                <property name="subtitle" translatable="yes">Download Windows ISO from Microsoft servers</property>
+                                <child type="prefix">
+                                  <object class="GtkCheckButton" id="download_radio">
+                                    <property name="active">true</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Select existing ISO</property>
+                                <property name="subtitle" translatable="yes">Use an existing Windows ISO file on your system</property>
+                                <child type="prefix">
+                                  <object class="GtkCheckButton" id="select_radio">
+                                    <property name="group">download_radio</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup">
+                            <property name="title" translatable="yes">Download Settings</property>
+                            <property name="description" translatable="yes">Configure where to download the ISO file</property>
+                            <child>
+                              <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Download folder</property>
+                                <property name="subtitle" translatable="yes">Choose where to save the downloaded ISO</property>
+                                <child type="suffix">
+                                  <object class="GtkLabel" id="download_path_label">
+                                    <property name="xalign">0</property>
+                                    <property name="ellipsize">3</property>
+                                    <property name="hexpand">true</property>
+                                    <property name="label" translatable="yes">~/Downloads</property>
+                                  </object>
+                                </child>
+                                <child type="suffix">
+                                  <object class="GtkButton" id="download_browse_button">
+                                    <property name="label" translatable="yes">Browse…</property>
+                                    <property name="valign">3</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup">
+                            <property name="title" translatable="yes">ISO File</property>
+                            <property name="description" translatable="yes">Select an existing Windows ISO file</property>
                             <child>
                               <object class="AdwActionRow">
                                 <property name="title" translatable="yes">ISO file</property>
@@ -75,11 +160,11 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                                     <property name="xalign">0</property>
                                     <property name="ellipsize">3</property>
                                     <property name="hexpand">true</property>
-                                    <property name="label" translatable="yes">&lt;No file selected&gt;</property>
+                                    <property name="label" translatable="yes">No file selected</property>
                                   </object>
                                 </child>
                                 <child type="suffix">
-                                  <object class="GtkButton">
+                                  <object class="GtkButton" id="iso_browse_button">
                                     <property name="label" translatable="yes">Browse…</property>
                                     <property name="valign">3</property>
                                   </object>
@@ -89,37 +174,282 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                           </object>
                         </child>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">1</property>
-                    <property name="hexpand">true</property>
-                    <property name="vexpand">true</property>
-                    <property name="spacing">6</property>
+                    <property name="halign">3</property>
+                    <property name="valign">3</property>
+                    <property name="spacing">24</property>
                     <child>
-                      <object class="AdwStatusPage">
-                        <property name="title" translatable="yes">Page Two</property>
-                        <property name="description" translatable="yes">Second step of the installer</property>
-                        <property name="vexpand">true</property>
+                      <object class="GtkSpinner" id="loading_spinner">
+                        <property name="spinning">true</property>
+                        <property name="width-request">64</property>
+                        <property name="height-request">64</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="loading_label">
+                        <property name="label" translatable="yes">Preparing installation...</property>
+                        <property name="halign">3</property>
+                        <style>
+                          <class name="title-2"/>
+                        </style>
                       </object>
                     </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkBox">
-                    <property name="orientation">1</property>
-                    <property name="hexpand">true</property>
-                    <property name="vexpand">true</property>
-                    <property name="spacing">6</property>
+                  <object class="GtkStack">
+                    <property name="transition-type">1</property>
                     <child>
-                      <object class="AdwStatusPage">
-                        <property name="title" translatable="yes">Page Three</property>
-                        <property name="description" translatable="yes">Final step</property>
-                        <property name="vexpand">true</property>
+                      <object class="GtkStackPage" id="prefs_page">
+                        <property name="child">
+                          <object class="GtkScrolledWindow">
+                            <property name="hexpand">true</property>
+                            <property name="vexpand">true</property>
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="orientation">1</property>
+                                <property name="spacing">18</property>
+                                <property name="margin-start">24</property>
+                                <property name="margin-end">24</property>
+                                <property name="margin-top">24</property>
+                                <property name="margin-bottom">24</property>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">1</property>
+                                    <property name="spacing">6</property>
+                                    <property name="halign">3</property>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon-name">computer-symbolic</property>
+                                        <property name="pixel-size">96</property>
+                                        <property name="halign">3</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">Virtual Machine Setup</property>
+                                        <property name="wrap">true</property>
+                                        <property name="halign">3</property>
+                                        <style>
+                                          <class name="title-2"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">Fill in the settings for the Virtual Machine</property>
+                                        <property name="wrap">true</property>
+                                        <property name="halign">3</property>
+                                        <style>
+                                          <class name="dim-label"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwPreferencesGroup">
+                                    <property name="title" translatable="yes">Virtual Machine settings</property>
+                                    <property name="description" translatable="yes">Settings used for setting up the virtual machine with libvirt</property>
+                                    <child>
+                                      <object class="AdwEntryRow">
+                                        <property name="title" translatable="yes">Name</property>
+                                        <property name="text" translatable="yes">LSWVM</property>
+                                        <property name="sensitive">false</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwSpinRow" id="memory_spinner">
+                                        <property name="title">Memory</property>
+                                        <property name="subtitle" translatable="yes">System memory to allocate for the VM in Gigabytes</property>
+                                        <property name="adjustment">
+                                          <object class="GtkAdjustment">
+                                            <property name="lower">1</property>
+                                            <property name="upper">512</property>
+                                            <property name="step-increment">1</property>
+                                            <property name="page-increment">5</property>
+                                            <property name="value">8</property>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwSpinRow" id="storage_spinner">
+                                        <property name="title">Disk Storage</property>
+                                        <property name="subtitle" translatable="yes">Maximum size of the virtual disk file used as storage by the VM in Gigabytes</property>
+                                        <property name="adjustment">
+                                          <object class="GtkAdjustment">
+                                            <property name="lower">54</property>
+                                            <property name="upper">1024</property>
+                                            <property name="step-increment">1</property>
+                                            <property name="page-increment">5</property>
+                                            <property name="value">120</property>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwSpinRow" id="cpu_spinner">
+                                        <property name="title">CPU Cores</property>
+                                        <property name="subtitle" translatable="yes">Number of CPU cores to share with the VM</property>
+                                        <property name="adjustment">
+                                          <object class="GtkAdjustment">
+                                            <property name="lower">1</property>
+                                            <property name="upper">128</property>
+                                            <property name="step-increment">1</property>
+                                            <property name="page-increment">1</property>
+                                            <property name="value">4</property>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwPreferencesGroup">
+                                    <property name="title" translatable="yes">Windows settings</property>
+                                    <property name="description" translatable="yes">Settings used for setting up Windows</property>
+                                    <child>
+                                      <object class="AdwEntryRow" id="admin_username_entry">
+                                        <property name="title" translatable="yes">Admin username</property>
+                                        <property name="text" translatable="yes">lsw</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwPasswordEntryRow" id="admin_password_entry">
+                                        <property name="title" translatable="yes">Admin password</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwActionRow">
+                                        <property name="title" translatable="yes">Hardware Acceleration</property>
+                                        <property name="subtitle" translatable="yes">Enable CPU virtualization and Hyper-V features for better performance</property>
+                                        <child type="prefix">
+                                          <object class="GtkCheckButton" id="hardware_accel_check">
+                                            <property name="active">true</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwComboRow" id="windows_edition_combo">
+                                        <property name="title" translatable="yes">Windows Edition</property>
+                                        <property name="subtitle" translatable="yes">The edition of Windows to install to the VM</property>
+                                        <property name="width-request">300</property>
+                                        <property name="model">
+                                          <object class="GtkStringList">
+                                            <items>
+                                              <item>Home</item>
+                                            </items>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </property>
                       </object>
                     </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="hexpand">true</property>
+                    <property name="vexpand">true</property>
+                    <property name="child">
+                      <object class="GtkBox">
+                        <property name="orientation">1</property>
+                        <property name="spacing">18</property>
+                        <property name="margin-start">24</property>
+                        <property name="margin-end">24</property>
+                        <property name="margin-top">24</property>
+                        <property name="margin-bottom">24</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">1</property>
+                            <property name="spacing">6</property>
+                            <property name="halign">3</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">folder-download-symbolic</property>
+                                <property name="pixel-size">96</property>
+                                <property name="halign">3</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Install the VM</property>
+                                <property name="wrap">true</property>
+                                <property name="halign">3</property>
+                                <style>
+                                  <class name="title-2"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Start the VM installation</property>
+                                <property name="wrap">true</property>
+                                <property name="halign">3</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="install_button">
+                            <property name="label" translatable="yes">Install VM</property>
+                            <style>
+                              <class name="suggested-action"/>
+                              <class name="pill"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label" translatable="yes">Instalation log:</property>
+                            <property name="halign">1</property>
+                            <property name="margin-bottom">0</property>
+                            <style>
+                              <class name="heading"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkFrame">
+                            <property name="margin-bottom">12</property>
+                            <property name="margin-top">0</property>
+                            <child>
+                              <object class="GtkScrolledWindow">
+                                <property name="height-request">180</property>
+                                <property name="width-request">600</property>
+                                <child>
+                                  <object class="GtkTextView" id="install_log">
+                                    <property name="bottom-margin">12</property>
+                                    <property name="left-margin">12</property>
+                                    <property name="right-margin">12</property>
+                                    <property name="top-margin">12</property>
+                                    <property name="editable">false</property>
+                                    <property name="cursor-visible">false</property>
+                                    <property name="wrap-mode">1</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
               </object>

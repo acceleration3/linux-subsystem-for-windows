@@ -38,7 +38,7 @@ add_custom_command(
     OUTPUT ${GENERATED_C}
     COMMAND ${GLIB_COMPILE_RESOURCES}
             --generate-source
-            --sourcedir=${CMAKE_CURRENT_BINARY_DIR}
+            --sourcedir=${CMAKE_CURRENT_LIST_DIR}
             --target=${GENERATED_C}
             ${XML_FILE}
     DEPENDS ${XML_FILE} ${COMPILED_UI_FILE}
